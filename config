@@ -1,0 +1,10 @@
+#Default GitHub
+Host github.com
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/id_rsa
+
+Host git-trix
+  HostName http://git.trixti.com.br
+  User git
+  IdentityFile ~/.ssh/id_rsa_trix
