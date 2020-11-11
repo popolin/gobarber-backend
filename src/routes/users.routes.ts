@@ -1,14 +1,22 @@
 import { Router } from 'express';
 import multer from 'multer';
+import { getRepository } from 'typeorm';
 import uploadConfig from '../config/upload';
 
 import CreateUserService from '../services/CreateUserService';
 import UpdateUserAvatarService from '../services/UpdateUserAvatarService';
 
 import ensureAuthenticated from '../middlewares/ensureAuthenticated';
+import User from '../models/User';
 
 const usersRouter = Router();
 const upload = multer(uploadConfig);
+
+usersRouter.get('/', async (request, response) => {
+    const usersRepository = getRepository(User);
+    const users = await usersRepository.find();
+    return response.json(users);
+});
 
 usersRouter.post('/', async (request, response) => {
     const { name, email, password } = request.body;
