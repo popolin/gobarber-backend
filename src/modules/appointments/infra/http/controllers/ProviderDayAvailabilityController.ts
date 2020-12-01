@@ -9,16 +9,16 @@ export default class ProviderDayAvailabilityController {
         response: Response,
     ): Promise<Response> {
         const { providerId } = request.params;
-        const { day, month, year } = request.body;
+        const { day, month, year } = request.query;
 
         const listProvidersDay = container.resolve(
             ListProviderDayAvailabilityService,
         );
         const availability = await listProvidersDay.execute({
             providerId,
-            day,
-            month,
-            year,
+            day: Number(day),
+            month: Number(month),
+            year: Number(year),
         });
 
         return response.json(availability);
