@@ -1,4 +1,10 @@
-import { getRepository, Repository, Raw } from 'typeorm';
+import {
+    getRepository,
+    Repository,
+    Raw,
+    Between,
+    FindConditions,
+} from 'typeorm';
 
 import IAppointmentsRepository from '@modules/appointments/repositories/IAppointmentsRepository';
 
@@ -6,6 +12,7 @@ import Appointment from '@modules/appointments/infra/typeorm/entities/Appointmen
 import ICreateAppointmentDTO from '@modules/appointments/dtos/ICreateAppointmentDTO';
 import IFindAllInMonthFromProviderDTO from '@modules/appointments/dtos/IFindAllInMonthFromProviderDTO';
 import IFindAllInDayFromProviderDTO from '@modules/appointments/dtos/IFindAllInDayFromProviderDTO';
+import IFindAllInWeekFromProviderDTO from '@modules/appointments/dtos/IFindAllInWeekFromProviderDTO';
 
 class AppointmentsRepository implements IAppointmentsRepository {
     private ormRepository: Repository<Appointment>;
@@ -53,6 +60,29 @@ class AppointmentsRepository implements IAppointmentsRepository {
                 ),
             },
         });
+        return findAppointments;
+    }
+
+    public async findAllInWeekFromProvider({
+        providerId,
+        day,
+        month,
+        year,
+        period,
+    }: IFindAllInWeekFromProviderDTO): Promise<Appointment[]> {
+        const startDate = new Date(year, month - 1, day, 0, 0, 0);
+        const endDate = new Date(year, month - 1, day + period, 24, 59, 59);
+        console.log(startDate);
+        console.log(endDate);
+
+        const findAppointments = await this.ormRepository.find({
+            where: {
+                providerId,
+                date: Between<FindConditions<Date>>(startDate, endDate),
+            },
+            relations: ['user'],
+        });
+        console.log(findAppointments);
         return findAppointments;
     }
 
